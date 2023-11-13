@@ -4,8 +4,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.model_zoo as modelzoo
 
-backbone_url = 'https://github.com/CoinCheung/BiSeNet/releases/download/0.0.0/backbone_v2.pth'
-
+#backbone_url = 'https://github.com/CoinCheung/BiSeNet/releases/download/0.0.0/backbone_v2.pth'
+backbone_url = './res/backbone_v2.pth'
 
 class ConvBNReLU(nn.Module):
 
@@ -364,7 +364,8 @@ class BiSeNetV2(nn.Module):
 
 
     def load_pretrain(self):
-        state = modelzoo.load_url(backbone_url)
+        #state = modelzoo.load_url(backbone_url)
+        state = torch.load(backbone_url)
         for name, child in self.named_children():
             if name in state.keys():
                 child.load_state_dict(state[name], strict=True)
