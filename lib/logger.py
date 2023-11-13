@@ -14,7 +14,7 @@ def setup_logger(name, logpth):
     logfile = osp.join(logpth, logfile)
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger()
     logger.setLevel(logging.INFO)
 
     file_handler = logging.FileHandler(logfile)
@@ -28,6 +28,7 @@ def setup_logger(name, logpth):
 
     logger.addHandler(file_handler)
     logger.addHandler(stream_handler)
+    file_handler.flush()
 
 
 def print_log_msg(it, max_iter, lr, time_meter, loss_meter, loss_pre_meter,
