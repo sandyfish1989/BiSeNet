@@ -1,4 +1,4 @@
-from utils import *
+from .utils import *
 
 class BiSeNetV3(nn.Module):
     def __init__(self, num_classes):

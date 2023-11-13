@@ -101,13 +101,14 @@ def set_optimizer(model):
 
 
 def set_model_dist(net):
-    local_rank = int(os.environ['LOCAL_RANK'])
-    net = nn.parallel.DistributedDataParallel(
-        net,
-        device_ids=[local_rank, ],
-        #  find_unused_parameters=True,
-        output_device=local_rank
-        )
+    # local_rank = int(os.environ['LOCAL_RANK'])
+    # net = nn.parallel.DistributedDataParallel(
+    #     net,
+    #     device_ids=[local_rank, ],
+    #     #  find_unused_parameters=True,
+    #     output_device=local_rank
+    #     )
+    net = net.to('cuda')
     return net
 
 
@@ -149,6 +150,7 @@ def train():
 
     ## train loop
     for it, (im, lb) in enumerate(dl):
+        print(it)
         im = im.cuda()
         lb = lb.cuda()
 
@@ -197,9 +199,15 @@ def train():
 
 
 def main():
-    local_rank = int(os.environ['LOCAL_RANK'])
-    torch.cuda.set_device(local_rank)
-    dist.init_process_group(backend='nccl')
+    # os.environ['LOCAL_RANK'] = '0'
+    # os.environ['RANK'] = '0'
+    # os.environ['WORLD_SIZE'] = '0'
+    # os.environ['MASTER_ADDR'] = 'localhost'
+    # os.environ['MASTER_PORT'] = '29500'
+    #
+    # local_rank = int(os.environ['LOCAL_RANK'])
+    # torch.cuda.set_device(local_rank)
+    # dist.init_process_group(backend='nccl')
 
     if not osp.exists(cfg.respth): os.makedirs(cfg.respth)
     setup_logger(f'{cfg.model_type}-{cfg.dataset.lower()}-train', cfg.respth)
