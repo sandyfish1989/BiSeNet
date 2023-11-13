@@ -184,12 +184,13 @@ def train():
     ## dump the final model and evaluate the result
     save_pth = osp.join(cfg.respth, 'model_final.pth')
     logger.info('\nsave models to {}'.format(save_pth))
-    state = net.module.state_dict()
-    if dist.get_rank() == 0: torch.save(state, save_pth)
+    state = net.state_dict()
+    # if dist.get_rank() == 0:
+    torch.save(state, save_pth)
 
     logger.info('\nevaluating the final model')
     torch.cuda.empty_cache()
-    iou_heads, iou_content, f1_heads, f1_content = eval_model(cfg, net.module)
+    iou_heads, iou_content, f1_heads, f1_content = eval_model(cfg, net)
     logger.info('\neval results of f1 score metric:')
     logger.info('\n' + tabulate(f1_content, headers=f1_heads, tablefmt='orgtbl'))
     logger.info('\neval results of miou metric:')
