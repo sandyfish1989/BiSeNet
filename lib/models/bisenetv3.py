@@ -1,10 +1,11 @@
 from .utils import *
 
 class BiSeNetV3(nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self, num_classes, aux_mode='train'):
         super(BiSeNetV3, self).__init__()
-        self.detail = DetailBranch() # 细节分支
-        self.segment = SegmentBranch() # 语义分支
+        self.aux_mode = aux_mode
+        self.detail = DetailBranch()
+        self.segment = SegmentBranch()
 
         self.bga = SimBGABlock(128, 128)
         #aux1 aux2 辅助训练
