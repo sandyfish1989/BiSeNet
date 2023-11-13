@@ -12,16 +12,10 @@ import torch.distributed as dist
 def setup_logger(name, logpth):
     logfile = '{}-{}.log'.format(name, time.strftime('%Y-%m-%d-%H-%M-%S'))
     logfile = osp.join(logpth, logfile)
-    FORMAT = '%(levelname)s %(filename)s(%(lineno)d): %(message)s'
-    log_level = logging.INFO
-    if dist.is_initialized() and dist.get_rank() != 0:
-        log_level = logging.WARNING
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
-
-    logging.basicConfig(level=log_level, format=FORMAT, filename=logfile)
-    logging.root.addHandler(logging.StreamHandler())
 
     file_handler = logging.FileHandler(logfile)
     file_handler.setLevel(logging.DEBUG)
@@ -29,8 +23,8 @@ def setup_logger(name, logpth):
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.DEBUG)
 
-    file_handler.setFormatter(FORMAT)
-    stream_handler.setFormatter(FORMAT)
+    file_handler.setFormatter(formatter)
+    stream_handler.setFormatter(formatter)
 
     logger.addHandler(file_handler)
     logger.addHandler(stream_handler)
