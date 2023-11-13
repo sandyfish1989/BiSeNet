@@ -16,12 +16,24 @@ def setup_logger(name, logpth):
     log_level = logging.INFO
     if dist.is_initialized() and dist.get_rank() != 0:
         log_level = logging.WARNING
-    try:
-        logging.basicConfig(level=log_level, format=FORMAT, filename=logfile, force=True)
-    except Exception:
-        for hl in logging.root.handlers: logging.root.removeHandler(hl)
-        logging.basicConfig(level=log_level, format=FORMAT, filename=logfile)
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+
+    logging.basicConfig(level=log_level, format=FORMAT, filename=logfile)
     logging.root.addHandler(logging.StreamHandler())
+
+    file_handler = logging.FileHandler(logfile)
+    file_handler.setLevel(logging.DEBUG)
+
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+
+    file_handler.setFormatter(FORMAT)
+    stream_handler.setFormatter(FORMAT)
+
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
 
 
 def print_log_msg(it, max_iter, lr, time_meter, loss_meter, loss_pre_meter,
